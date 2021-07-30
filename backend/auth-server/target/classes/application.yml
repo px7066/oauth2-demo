@@ -1,0 +1,32 @@
+server:
+  port: 9000
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.springframework.security.oauth2: INFO
+#    org.springframework.boot.autoconfigure: DEBUG
+
+# HikariCP 配置
+spring:
+  datasource:
+    hikari:
+      auto-commit: true
+      maximum-pool-size: 10
+      # 5分钟
+      idle-timeout: 300000
+      pool-name: auth-pool
+      connection-timeout: 30000
+    username: root
+    password: 123456
+    url:  jdbc:mysql://localhost:3306/auth_center?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
