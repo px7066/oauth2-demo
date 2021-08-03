@@ -43,7 +43,6 @@ import qs from 'qs'
   created() {
     axios.defaults.baseURL = 'http://auth-server:9000/'
     this.getCsrfToken()
-
   },
   data() {
     return {
