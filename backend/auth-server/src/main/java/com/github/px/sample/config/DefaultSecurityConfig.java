@@ -15,48 +15,70 @@
  */
 package com.github.px.sample.config;
 
+import com.github.px.sample.config.configurer.AuthServerConfigurer;
+import com.github.px.sample.custom.CustomAuthenticationFailureHandler;
+import com.github.px.sample.custom.CustomLoginUrlAuthenticationEntryPoint;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
 /**
- * @author Joe Grandja
+ * <p>Security config </p>
+ *
+ * @author panxi
+ * @version 1.0.0
+ * @date 2021/8/3
  */
-@EnableWebSecurity
+@Configuration
 public class DefaultSecurityConfig {
+
+	@Autowired
+	private UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource;
+
+	@Autowired
+	private AuthServerConfigurer authServerConfigurer;
 
 	// @formatter:off
 	@Bean
 	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+		AuthenticationEntryPoint authenticationEntryPoint = new CustomLoginUrlAuthenticationEntryPoint(authServerConfigurer.getLoginFormUrl());
+		// 认证失败处理
+		AuthenticationFailureHandler authenticationFailureHandler = new CustomAuthenticationFailureHandler(authServerConfigurer.getFailureUrl());
+
 		http
-			.authorizeRequests().antMatchers("**")
-			.permitAll()
+			.authorizeRequests().antMatchers("/login", "/loginPage","/getCsrfToken", "/index.html", "/favicon.ico","/","/js/**", "/css/**")
+				.permitAll()
 			.and()
 			.authorizeRequests(authorizeRequests ->
 				authorizeRequests.anyRequest().authenticated()
 			)
-			.formLogin(withDefaults());
+			.formLogin()
+				.loginPage(authServerConfigurer.getLoginFormUrl())
+				.loginProcessingUrl("/login")
+				.failureHandler(authenticationFailureHandler)
+			.and()
+			.cors()
+				.configurationSource(urlBasedCorsConfigurationSource)
+			.and()
+			.exceptionHandling()
+				.authenticationEntryPoint(authenticationEntryPoint)
+			.and()
+			.csrf()
+				.disable();
 		return http.build();
 	}
-	// @formatter:on
-
-	// @formatter:off
-//	@Bean
-//	UserDetailsService users() {
-//		UserDetails user = User.withDefaultPasswordEncoder()
-//				.username("user1")
-//				.password("password")
-//				.roles("USER")
-//				.build();
-//		return new InMemoryUserDetailsManager(user);
-//	}
-	// @formatter:on
-
 }

@@ -4,9 +4,9 @@ server:
 logging:
   level:
     root: INFO
-    org.springframework.web: INFO
-    org.springframework.security: INFO
-    org.springframework.security.oauth2: INFO
+    org.springframework.web: TRACE
+    org.springframework.security: TRACE
+    org.springframework.security.oauth2: TRACE
 #    org.springframework.boot.autoconfigure: DEBUG
 
 # HikariCP 配置
@@ -33,4 +33,16 @@ spring:
   web:
     resources:
       add-mappings: true
-      static-locations: classpath:dist/
+      static-locations:
+        - "classpath:/META-INF/resources/"
+        - "classpath:/resources/"
+        - "classpath:/static/"
+        - "classpath:/public/"
+        - "classpath:/dist/"
+  mvc:
+    view:
+      suffix: .html
+      prefix: /
+auth:
+  server:
+    login-form-url: /login

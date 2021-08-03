@@ -15,6 +15,8 @@
  */
 package com.github.px.sample.config;
 
+import com.github.px.sample.config.configurer.AuthServerConfigurer;
+import com.github.px.sample.custom.CustomAuthenticationFailureHandler;
 import com.github.px.sample.jose.Jwks;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -50,6 +52,7 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.sql.DataSource;
@@ -63,9 +66,15 @@ import java.util.UUID;
 @Configuration(proxyBeanMethods = false)
 public class AuthorizationServerConfig {
 
+	@Autowired
+	private AuthServerConfigurer authServerConfigurer;
+
 	@Bean
 	@Order(Ordered.HIGHEST_PRECEDENCE)
 	public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
+		// 认证失败处理
+		AuthenticationFailureHandler authenticationFailureHandler = new CustomAuthenticationFailureHandler(authServerConfigurer.getFailureUrl());
+
 		OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer =
 				new OAuth2AuthorizationServerConfigurer<>();
 		authorizationServerConfigurer
@@ -81,7 +90,12 @@ public class AuthorizationServerConfig {
 				)
 				.csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
 				.apply(authorizationServerConfigurer);
-		return http.formLogin(Customizer.withDefaults()).build();
+		http
+			.formLogin()
+				.loginPage(authServerConfigurer.getLoginFormUrl())
+				.loginProcessingUrl("/login")
+				.failureHandler(authenticationFailureHandler);
+		return http.build();
 	}
 
 	// @formatter:off
