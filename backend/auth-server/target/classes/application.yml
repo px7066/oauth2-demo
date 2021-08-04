@@ -45,5 +45,5 @@ spring:
       prefix: /
 auth:
   server:
-    login-form-url: http://localhost:8081/
-    failure-url: http://localhost:8081/
+    login-form-url: /login
+    failure-url: /login

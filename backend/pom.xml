@@ -11,6 +11,7 @@
     <modules>
         <module>auth-server</module>
         <module>auth-dao</module>
+        <module>auth-client</module>
     </modules>
 
     <properties>
