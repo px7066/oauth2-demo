@@ -3,3 +3,5 @@
 /auth-server/src/main/resources/dist/
 /auth-client/src/main/resources/static/dist/
 
+/auth-client/src/main/resources/static/
+/auth-client/target/

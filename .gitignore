@@ -4,3 +4,4 @@ backend/auth-server/target/maven-status/maven-compiler-plugin/compile/default-co
 
 backend/auth-dao/target/**
 backend/auth-server/target/**
+backend/auth-client/target/**
