@@ -98,7 +98,6 @@ public class AuthorizationServerConfig {
 				.clientId("messaging-client")
 				.clientSecret("{noop}secret")
 				.clientName("客户端测试")
-				.clientAuthenticationMethod(ClientAuthenticationMethod.BASIC)
 				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
 				.authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
 				.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
@@ -113,6 +112,25 @@ public class AuthorizationServerConfig {
 		// Save registered client in db as if in-memory
 		JdbcRegisteredClientRepository registeredClientRepository = new JdbcRegisteredClientRepository(jdbcTemplate);
 		RegisteredClient existsRegisteredClient = registeredClientRepository.findByClientId(registeredClient.getClientId());
+		if(existsRegisteredClient == null){
+			registeredClientRepository.save(registeredClient);
+		}
+		registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
+				.clientId("custom-client")
+				.clientSecret("{noop}secret")
+				.clientName("客户端测试")
+				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+				.authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+				.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+				.authorizationGrantType(AuthorizationGrantType.PASSWORD)
+				.redirectUri("http://127.0.0.1:9080/")
+				.redirectUri("http://localhost:9080/")
+				.scope(OidcScopes.OPENID)
+				.scope("message.read")
+				.scope("message.write")
+				.clientSettings(clientSettings -> clientSettings.requireUserConsent(true))
+				.build();
+		existsRegisteredClient = registeredClientRepository.findByClientId(registeredClient.getClientId());
 		if(existsRegisteredClient == null){
 			registeredClientRepository.save(registeredClient);
 		}
