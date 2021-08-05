@@ -1,3 +1,5 @@
 /.idea/
 /oauth2-demo.iml
 /auth-server/src/main/resources/dist/
+/auth-client/src/main/resources/static/dist/
+

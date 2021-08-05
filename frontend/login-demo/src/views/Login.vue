@@ -1,6 +1,6 @@
 <style scoped>
-@import url('https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css');
-@import url('https://getbootstrap.com/docs/4.0/examples/signin/signin.css');
+@import url('../css/bootstrap.min.css');
+@import url('../css/signin.css');
 /* .login_form{
   width: 400px;
   text-align: center;

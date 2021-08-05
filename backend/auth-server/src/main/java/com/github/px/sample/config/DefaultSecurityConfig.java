@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -43,6 +44,11 @@ public class DefaultSecurityConfig {
 	@Autowired
 	private AuthServerConfigurer authServerConfigurer;
 
+	@Bean
+	WebSecurityCustomizer webSecurityCustomizer() {
+		return (web) -> web.ignoring().antMatchers("/index.html", "/favicon.ico", "/js/**", "/css/**");
+	}
+
 	// @formatter:off
 	@Bean
 	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -51,7 +57,7 @@ public class DefaultSecurityConfig {
 		AuthenticationFailureHandler authenticationFailureHandler = new CustomAuthenticationFailureHandler(authServerConfigurer.getFailureUrl());
 
 		http
-			.authorizeRequests().antMatchers("/login", "/loginPage","/getCsrfToken", "/index.html", "/favicon.ico","/","/js/**", "/css/**")
+			.authorizeRequests().antMatchers("/login", "/loginPage","/getCsrfToken")
 				.permitAll()
 			.and()
 			.authorizeRequests(authorizeRequests ->
