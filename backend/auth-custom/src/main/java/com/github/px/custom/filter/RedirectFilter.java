@@ -35,6 +35,9 @@ public class RedirectFilter implements Filter {
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (AccessDenyException e) {
             String redirectUrl = UrlBuilder.buildRedirectUrl(request);
+            if(redirectUrl.contains("localhost")){
+                redirectUrl = redirectUrl.replace("localhost", "127.0.0.1");
+            }
             String redirectAction = String.format(redirectActionFormat, clientConfigurer.getAuthServer(), action, responseType, clientConfigurer.getClientId(), scope, redirectUrl);
             response.sendRedirect(redirectAction);
         }

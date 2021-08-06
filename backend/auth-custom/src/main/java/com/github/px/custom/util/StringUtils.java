@@ -15,23 +15,14 @@ public class StringUtils {
             if(andStrs == null){
                 return params;
             }
-            String[] paramsStrings = new String[andStrs.length];
             if(andStrs.length >0){
-                System.arraycopy(andStrs, 1, paramsStrings, 1, andStrs.length -1);
-                Pattern questionPattern = Pattern.compile("\\?");
-                String[] questionStrings = questionPattern.split(andStrs[0]);
-                if(questionStrings.length > 1){
-                    System.arraycopy(questionStrings, 1, paramsStrings, 0, questionStrings.length -1);
-                }
                 Pattern equalPattern = Pattern.compile("=");
-                for (String paramsString : paramsStrings) {
+                for (String paramsString : andStrs) {
                     if(!ObjectUtils.isEmpty(paramsString)){
                         String[] keyValues = equalPattern.split(paramsString);
                         if(keyValues.length > 1){
                             params.put(keyValues[0], keyValues[1]);
                         }
-
-
                     }
                 }
             }

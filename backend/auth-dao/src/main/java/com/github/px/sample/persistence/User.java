@@ -28,7 +28,7 @@ public class User extends BaseEntity implements UserDetails, CredentialsContaine
     private String username;
 
     @Column(name = "accountNonExpired")
-    private boolean accountNonExpired;
+    private Boolean accountNonExpired;
 
     @Column(name = "accountNonLocked")
     private Boolean accountNonLocked;

@@ -1,6 +1,8 @@
 package com.github.px.custom.store;
 
-public class TokenResult {
+import java.io.Serializable;
+
+public class TokenResult implements Serializable {
     public static final String TOKEN_RESULT_KEY = "TOKEN_RESULT_KEY";
 
     private String access_token;

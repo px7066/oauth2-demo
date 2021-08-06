@@ -17,6 +17,8 @@ package com.github.px.sample.config;
 
 import com.github.px.sample.config.configurer.AuthServerConfigurer;
 import com.github.px.sample.custom.CustomAuthenticationFailureHandler;
+import com.github.px.sample.custom.provider.CustomOAuth2AuthorizationCodeAuthenticationProvider;
+import com.github.px.sample.custom.provider.OAuth2ConfigurerUtils;
 import com.github.px.sample.jose.Jwks;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -29,6 +31,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
@@ -38,6 +41,7 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
@@ -62,9 +66,16 @@ public class AuthorizationServerConfig {
 	@Autowired
 	private AuthServerConfigurer authServerConfigurer;
 
+	@Autowired
+	private OAuth2AuthorizationService authorizationService;
+
 	@Bean
 	@Order(Ordered.HIGHEST_PRECEDENCE)
 	public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
+//		JwtEncoder jwtEncoder = OAuth2ConfigurerUtils.getJwtEncoder(http);
+//		CustomOAuth2AuthorizationCodeAuthenticationProvider customOAuth2AuthorizationCodeAuthenticationProvider = new CustomOAuth2AuthorizationCodeAuthenticationProvider(authorizationService, jwtEncoder);
+//		http.authenticationProvider(customOAuth2AuthorizationCodeAuthenticationProvider);
+
 		// 认证失败处理
 		AuthenticationFailureHandler authenticationFailureHandler = new CustomAuthenticationFailureHandler(authServerConfigurer.getFailureUrl());
 
@@ -88,6 +99,7 @@ public class AuthorizationServerConfig {
 				.loginPage(authServerConfigurer.getLoginFormUrl())
 				.loginProcessingUrl("/login")
 				.failureHandler(authenticationFailureHandler);
+
 		return http.build();
 	}
 

@@ -55,7 +55,6 @@ public class DefaultSecurityConfig {
 		AuthenticationEntryPoint authenticationEntryPoint = new CustomLoginUrlAuthenticationEntryPoint(authServerConfigurer.getLoginFormUrl());
 		// 认证失败处理
 		AuthenticationFailureHandler authenticationFailureHandler = new CustomAuthenticationFailureHandler(authServerConfigurer.getFailureUrl());
-
 		http
 			.authorizeRequests().antMatchers("/login", "/loginPage","/getCsrfToken")
 				.permitAll()

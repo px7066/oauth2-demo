@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @WebFilter
@@ -32,7 +33,7 @@ public class TokenFilter implements Filter {
     @Autowired
     private AuthClientConfigurer authClientConfigurer;
 
-    private BASE64Encoder base64Encoder = new BASE64Encoder();
+    private static final BASE64Encoder base64Encoder = new BASE64Encoder();
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -54,17 +55,22 @@ public class TokenFilter implements Filter {
             parameters.set("grant_type", "authorization_code");
             parameters.set("code", code);
 
+            String authorizationSource = authClientConfigurer.getClientId() + ":" + authClientConfigurer.getSecret();
+
             HttpHeaders headers = new HttpHeaders();
             headers.add("Accept", "application/json;charset=UTF-8");
             headers.add("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
-//            headers.add();
+            headers.add("Authorization", "Basic " + base64Encoder.encode(authorizationSource.getBytes(StandardCharsets.UTF_8)));
 
-            RequestEntity<?> requestEntity = new RequestEntity(parameters, headers, HttpMethod.POST, uri);
+            RequestEntity<MultiValueMap<String, String>> requestEntity = new RequestEntity(parameters, headers, HttpMethod.POST, uri);
             ResponseEntity<TokenResult> tokenResultResponseEntity = restTemplate.exchange(requestEntity, TokenResult.class);
             if(tokenResultResponseEntity.getStatusCode() == HttpStatus.OK){
                 request.getSession().setAttribute(TokenResult.TOKEN_RESULT_KEY, tokenResultResponseEntity.getBody());
             }
+            response.sendRedirect(redirectUrl);
+            return;
         }
         filterChain.doFilter(request, response);
     }
+
 }
