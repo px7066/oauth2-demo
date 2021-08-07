@@ -41,8 +41,8 @@ import qs from 'qs'
 
 @Options({
   created() {
-    axios.defaults.baseURL = 'http://auth-server:9000/'
-    this.getCsrfToken()
+    // axios.defaults.baseURL = 'http://auth-server:9000/'
+    // this.getCsrfToken()
   },
   data() {
     return {
