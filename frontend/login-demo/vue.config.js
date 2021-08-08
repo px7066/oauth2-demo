@@ -1,6 +1,6 @@
 module.exports = {
   publicPath: "/",
-  outputDir: "../../../custom-workspace/auth-server-demo/src/main/resources/dist",
+  outputDir: "../../../../custom-workspace/auth-server-demo/src/main/resources/dist",
   devServer: {
     proxy: {
       // '/login': {
