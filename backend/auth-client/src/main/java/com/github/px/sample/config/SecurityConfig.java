@@ -29,6 +29,7 @@ public class SecurityConfig {
         return (web) -> web.ignoring().antMatchers("/webjars/**", "/static/**");
     }
 
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http

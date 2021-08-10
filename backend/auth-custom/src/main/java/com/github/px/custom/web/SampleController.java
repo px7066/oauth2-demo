@@ -11,7 +11,7 @@ public class SampleController {
         return new String[] {"Message 1", "Message 2", "Message 3"};
     }
 
-    @GetMapping("   getUsername")
+    @GetMapping("getUsername")
     public String getUsername(){
         return IdTokenContext.getIdToken().getUsername();
     }
