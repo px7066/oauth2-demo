@@ -7,9 +7,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration
+//@Configuration
 public class ResourceConfig {
-    @Order(Ordered.HIGHEST_PRECEDENCE)
     @Bean
     SecurityFilterChain resourceFilterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -19,6 +18,5 @@ public class ResourceConfig {
                 .oauth2ResourceServer()
                 .jwt();
         return http.build();
-
     }
 }
